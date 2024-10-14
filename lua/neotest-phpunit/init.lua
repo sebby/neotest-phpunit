@@ -11,6 +11,9 @@ local config = require("neotest-phpunit.config")
 local dap_configuration
 
 local function get_strategy_config(strategy, program, args)
+  print("start ---- get_strategy_config")
+  print(vim.inspect(args))
+  print("end ---- get_strategy_config")
   local cfg = {
     dap = function()
       vim.validate({
@@ -148,6 +151,10 @@ function NeotestAdapter.build_spec(args)
   local results_path = async.fn.tempname()
   local program = config.get_phpunit_cmd()
 
+  print("----Build Spec")
+  print(program)
+  -- print(vim.inspect(args))
+  print("----")
   local script_args = {
     position.name ~= "tests" and position.path,
     "--log-junit=" .. results_path,
@@ -165,6 +172,7 @@ function NeotestAdapter.build_spec(args)
     script_args = vim.tbl_flatten({
       script_args,
       filter_args,
+      "-c ./asasasas",
     })
   end
 
