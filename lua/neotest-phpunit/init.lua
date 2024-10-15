@@ -11,9 +11,6 @@ local config = require("neotest-phpunit.config")
 local dap_configuration
 
 local function get_strategy_config(strategy, program, args)
-  print("start ---- get_strategy_config")
-  print(vim.inspect(args))
-  print("end ---- get_strategy_config")
   local cfg = {
     dap = function()
       vim.validate({
@@ -36,6 +33,8 @@ local function get_strategy_config(strategy, program, args)
           "string",
         },
       })
+      print("-----")
+      print(vim.inspect(args))
 
       return vim.tbl_extend("keep", {
         type = "php",
@@ -151,10 +150,6 @@ function NeotestAdapter.build_spec(args)
   local results_path = async.fn.tempname()
   local program = config.get_phpunit_cmd()
 
-  print("----Build Spec")
-  print(program)
-  -- print(vim.inspect(args))
-  print("----")
   local script_args = {
     position.name ~= "tests" and position.path,
     "--log-junit=" .. results_path,
@@ -165,14 +160,19 @@ function NeotestAdapter.build_spec(args)
       "--filter",
       "::" .. position.name .. "( with data set .*)?$",
     })
+    local options = vim.tbl_flatten({
+      "--configuration",
+      os.getenv("TEST_PHPUNIT_CONFIG"),
+      os.getenv("TEST_PHPUNIT_FOLDERS"),
+    })
 
     logger.info("position.path:", { position.path })
     logger.info("--filter position.name:", { position.name })
 
     script_args = vim.tbl_flatten({
+      options,
       script_args,
       filter_args,
-      "-c ./asasasas",
     })
   end
 
@@ -180,6 +180,8 @@ function NeotestAdapter.build_spec(args)
     program,
     script_args,
   })
+  print(command)
+  logger.info("scn123456789")
 
   logger.trace("PHPUnit command: ", { command })
 

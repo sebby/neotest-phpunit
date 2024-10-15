@@ -20,7 +20,7 @@ M.get_filter_dirs = function()
   return { ".git", "node_modules" }
 end
 
-M.get_args = function()
+M.get_options = function()
   return { "" }
 end
 return M
