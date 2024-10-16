@@ -154,23 +154,27 @@ function NeotestAdapter.build_spec(args)
     position.name ~= "tests" and position.path,
     "--log-junit=" .. results_path,
   }
+  -- add some temporary options.
+  local option_args = {
+    "--configuration",
+    os.getenv("TEST_PHPUNIT_CONFIG"),
+    os.getenv("TEST_PHPUNIT_FOLDERS"),
+  }
+  -- concatenate the options table with script_args.
+  for _, v in ipairs(option_args) do
+    table.insert(script_args, v)
+  end
 
   if position.type == "test" then
     local filter_args = vim.tbl_flatten({
       "--filter",
       "::" .. position.name .. "( with data set .*)?$",
     })
-    local options = vim.tbl_flatten({
-      "--configuration",
-      os.getenv("TEST_PHPUNIT_CONFIG"),
-      os.getenv("TEST_PHPUNIT_FOLDERS"),
-    })
 
     logger.info("position.path:", { position.path })
     logger.info("--filter position.name:", { position.name })
 
     script_args = vim.tbl_flatten({
-      options,
       script_args,
       filter_args,
     })
@@ -180,8 +184,7 @@ function NeotestAdapter.build_spec(args)
     program,
     script_args,
   })
-  print(command)
-  logger.info("scn123456789")
+  print(vim.inspect(command))
 
   logger.trace("PHPUnit command: ", { command })
 
