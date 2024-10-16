@@ -154,15 +154,13 @@ function NeotestAdapter.build_spec(args)
     position.name ~= "tests" and position.path,
     "--log-junit=" .. results_path,
   }
-  -- add some temporary options.
-  local option_args = {
-    "--configuration",
-    os.getenv("TEST_PHPUNIT_CONFIG"),
-    os.getenv("TEST_PHPUNIT_FOLDERS"),
-  }
-  -- concatenate the options table with script_args.
-  for _, v in ipairs(option_args) do
-    table.insert(script_args, v)
+  print(vim.inspect(config.get_args()))
+  --
+  -- concatenate the args table with script_arg
+  if config.get_args then
+    for _, v in ipairs(config.get_args()) do
+      table.insert(script_args, v)
+    end
   end
 
   if position.type == "test" then
@@ -253,6 +251,13 @@ setmetatable(NeotestAdapter, {
     elseif opts.root_files then
       config.get_root_files = function()
         return opts.root_files
+      end
+    end
+    if is_callable(opts.args) then
+      config.args = opts.args
+    elseif opts.args then
+      config.get_args = function()
+        return opts.args
       end
     end
     if is_callable(opts.filter_dirs) then
