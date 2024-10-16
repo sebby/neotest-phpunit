@@ -184,7 +184,6 @@ function NeotestAdapter.build_spec(args)
     program,
     script_args,
   })
-  print(vim.inspect(command))
 
   logger.trace("PHPUnit command: ", { command })
 
